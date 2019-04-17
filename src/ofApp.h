@@ -1,18 +1,21 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxMidi.h"
 #include "ofxGui.h"
 #include "star.h"
 #include "celestial.h"
+#include "constellation.h"
 
 #define NSTARS 2000
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp, public ofxMidiListener {
 
 	public:
 		void setup();
 		void update();
 		void draw();
+		void exit();
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -27,10 +30,11 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
                 void eccentricityChange(float &_ecc);
+								void newMidiMessage(ofxMidiMessage& eventArgs);
 
-                float time;
-
+                // float time;
                 Celestial stars[NSTARS];
+								deque<Constellation> constellations;
 
                 ofFbo fbo;
 
@@ -46,5 +50,9 @@ class ofApp : public ofBaseApp{
                 ofxToggle blur;
 
                 bool bHide;
+
+								ofxMidiIn midiIn;
+								std::vector<ofxMidiMessage> midiMessages;
+								std::size_t maxMessages = 10;
 
 };

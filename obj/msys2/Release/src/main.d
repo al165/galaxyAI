@@ -331,6 +331,18 @@ obj/msys2/Release/src/main.o: \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/libs/openFrameworks/3d/ofCamera.h \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/libs/openFrameworks/3d/ofEasyCam.h \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/apps/myApps/galaxyAI/src/ofApp.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidi.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiIn.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxBaseMidi.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiConstants.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiMessage.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiTypes.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/desktop/ofxRtMidiIn.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/libs/rtmidi/RtMidi.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiOut.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/desktop/ofxRtMidiOut.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiClock.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiTimecode.h \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxGui.h \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxToggle.h \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxBaseGui.h \
@@ -343,7 +355,8 @@ obj/msys2/Release/src/main.o: \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxColorPicker.h \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxPanel.h \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/apps/myApps/galaxyAI/src/star.h \
- C:/msys64/home/Arran/of_v0.10.1_msys2_release/apps/myApps/galaxyAI/src/celestial.h
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/apps/myApps/galaxyAI/src/celestial.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/apps/myApps/galaxyAI/src/constellation.h
 
 C:/msys64/home/Arran/of_v0.10.1_msys2_release/libs/openFrameworks/ofMain.h:
 
@@ -1007,6 +1020,30 @@ C:/msys64/home/Arran/of_v0.10.1_msys2_release/libs/openFrameworks/3d/ofEasyCam.h
 
 C:/msys64/home/Arran/of_v0.10.1_msys2_release/apps/myApps/galaxyAI/src/ofApp.h:
 
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidi.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiIn.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxBaseMidi.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiConstants.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiMessage.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiTypes.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/desktop/ofxRtMidiIn.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/libs/rtmidi/RtMidi.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiOut.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/desktop/ofxRtMidiOut.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiClock.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxMidi/src/ofxMidiTimecode.h:
+
 C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxGui.h:
 
 C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxToggle.h:
@@ -1032,3 +1069,5 @@ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxPanel.h:
 C:/msys64/home/Arran/of_v0.10.1_msys2_release/apps/myApps/galaxyAI/src/star.h:
 
 C:/msys64/home/Arran/of_v0.10.1_msys2_release/apps/myApps/galaxyAI/src/celestial.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/apps/myApps/galaxyAI/src/constellation.h:

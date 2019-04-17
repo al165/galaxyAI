@@ -13,6 +13,7 @@ void Celestial::setup(float _ecc, float _a, float _gRotation){
     numerator = a*(1.0-ecc*ecc);
 
     r = numerator / (1.0 + ecc*cos(orbitAngle));
+    pos = ofVec2f(r, 0);
 
     size = ofRandom(1, 4);
     //color.set(255, 255, 255, 255);
@@ -44,7 +45,7 @@ void Celestial::updateBBox(){
 }
 
 void Celestial::draw(int trails, bool orbits, bool _blur, float scale, float _color){
-    
+
     ofPushMatrix();
         ofRotateZRad(globalRotation);
 
@@ -58,6 +59,14 @@ void Celestial::draw(int trails, bool orbits, bool _blur, float scale, float _co
 
         float x = r * cos(orbitAngle);
         float y = r * sin(orbitAngle);
+
+        GLfloat m[16];
+        glGetFloatv(GL_MODELVIEW_MATRIX, m);
+        ofMatrix4x4 mat(m);
+        ofVec3f point(x, y, 0);
+        ofVec3f newPos = point*mat;
+        pos.x = newPos.x;
+        pos.y = newPos.y;
 
         // draw blur...
         if(_blur){
@@ -89,18 +98,6 @@ void Celestial::draw(int trails, bool orbits, bool _blur, float scale, float _co
         }
     ofPopMatrix();
 
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
