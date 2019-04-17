@@ -7,12 +7,14 @@
 
 class Constellation {
     public:
-        Constellation(deque<Celestial> &_stars);
-        void draw();
-
-        deque<Celestial> stars;
+        // Constellation(deque<Celestial> &_stars);
+        Constellation(vector<int> _starIDs);
+        void draw(vector<Celestial>& stars);
         float time;
-        bool alive;
+
+    private:
+        vector<int> starIDs;
+
 
 };
 #endif

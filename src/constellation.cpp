@@ -1,30 +1,29 @@
 #include "constellation.h"
+#include <iostream>
 
-Constellation::Constellation(deque<Celestial> &_stars){
-    stars = _stars;
+Constellation::Constellation(vector<int> _starIDs){
+    starIDs = _starIDs;
     time = ofGetElapsedTimef();
-    alive = true;
 }
 
-void Constellation::draw(){
-    if(!alive){
-        return;
-    }
+void Constellation::draw(vector<Celestial>& stars){
     float delta = ofGetElapsedTimef() - time;
 
-    if(delta > FADE_TIME){
-        alive = false;
-        return;
-    }
-
-    ofSetColor(255);
-
     ofSetColor(ofMap(delta, 0, FADE_TIME, 255, 0));
-    for(unsigned int i = 0; i < stars.size(); i++){
-        if(i+1 < stars.size()){
-            ofDrawLine(stars[i].pos, stars[i+1].pos);
+    float r = ofMap(delta, 0, FADE_TIME, 4, 1);
+    // for(unsigned int i = 0; i < starIDs.size(); i++){
+    int lastID = -1;
+    for(int i : starIDs){
+        // if(i+1 < stars.size()){
+        //     ofDrawLine(stars[starIDs[i]].pos, stars[starIDs[i+1]].pos);
+        // }
+        if(lastID >= 0){
+            ofDrawLine(stars[i].pos, stars[lastID].pos);
         }
-        ofDrawCircle(stars[i].pos, 4);
+        ofDrawCircle(stars[i].pos, r);
+        lastID = i;
     }
+
+    // cout << " DONE" << endl;
 
 }

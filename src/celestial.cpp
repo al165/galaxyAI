@@ -1,8 +1,8 @@
 #include "celestial.h"
 #include "math.h"
 
-Celestial::Celestial(){
-
+Celestial::Celestial(float _ecc, float _a, float _gRotation){
+    setup(_ecc, _a, _gRotation);
 }
 
 void Celestial::setup(float _ecc, float _a, float _gRotation){

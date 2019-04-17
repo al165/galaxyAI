@@ -4,8 +4,12 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+
+    cout << "Starting..." << endl;
+
     ofResetElapsedTimeCounter();
     //ofSetFrameRate(30);
+    cout << "Setting up GUI... ";
     // setup GUI...
     eccentricity.addListener(this, &ofApp::eccentricityChange);
     gui.setup();
@@ -19,16 +23,24 @@ void ofApp::setup(){
     gui.add(orbits.setup("orbits", false));
     gui.add(blur.setup("blur", false));
 
+    cout << "DONE" << endl;
+
     bHide = false;
 
     ofBackground(0);
     ofSetCircleResolution(50);
+
+    cout << "Setting up FBO...";
 
     fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
 
     fbo.begin();
         ofClear(255, 255, 255, 0);
     fbo.end();
+
+    cout << "DONE" << endl;
+
+    cout << "Setting up stars...";
 
     for(int i=0; i<NSTARS; i++){
         float r = ofRandom(100, ofGetHeight()/2);
@@ -43,65 +55,79 @@ void ofApp::setup(){
             }
         }
 
-        stars[i].setup(0, r, theta);
+        Celestial star = Celestial(0, r, theta);
+        // cout << i << " ";
+        stars.push_back(star);
+
+        // stars[i].setup(0, r, theta);
     }
 
+    cout << "DONE" << endl;
+
+    cout << "stars.size(): " << stars.size() << endl;
+
+    cout << stars[stars.size()-1].pos << endl;
+
     // setup Midi connection
+    cout << "Setting up MIDI connection..." << endl;
     midiIn.listInPorts();
-    midiIn.openPort(0);
-    // midiIn.openPort("LoopBe Internal MIDI");
+    // midiIn.openPort(0);
+    midiIn.openPort("LoopBe Internal MIDI 0");
 
     midiIn.ignoreTypes(false, false, false);
     midiIn.addListener(this);
     midiIn.setVerbose(true);
+
+    cout << "DONE" << endl;
 
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     //float dt = speed*ofGetLastFrameTime();
+    // cout << "UPDATE" << endl;
 
-    for(int i=0; i<NSTARS; i++){
-        stars[i].update(speed);
+    // for(int i=0; i<NSTARS; i++){
+    for(Celestial& star : stars){
+        // stars[i].update(speed);
+        star.update(speed);
     }
 
     // if messages greater than 5, draw constelation!
-    if(midiMessages.size() > 5){
-        deque<Celestial> constellation;
+    for(unsigned int j=0; j < CHANNELS; j++){
+        if(midiMessages[j].size() > 5){
+            // cout << "creating constellation...";
+            vector<int> constellation;
 
-        for(unsigned int i=0; i<midiMessages.size(); i++){
-        		ofxMidiMessage &message = midiMessages[i];
-            constellation.push_front(stars[message.pitch]);
+            for(unsigned int i=0; i<midiMessages[j].size(); i++){
+            		ofxMidiMessage &message = midiMessages[j][i];
+                constellation.push_back(message.pitch + 50*j);
+            }
+
+            Constellation newConst = Constellation(constellation);
+            constellations.push_back(newConst);
+
+            midiMessages[j].clear();
+
+            // cout << "DONE" << endl;
+
         }
-
-        Constellation newConst = Constellation(constellation);
-        constellations.push_back(newConst);
-        cout << constellation.size() << " " << constellations.size() << endl;
-        // deque<int> star_ids;
-        // for(unsigned int i = 0; i < midiMessages.size(); i++) {
-        // 		ofxMidiMessage &message = midiMessages[i];
-        //     star_ids.push_front(message.pitch);
-        // }
-        //
-        midiMessages.clear();
-        //
-        // ofSetColor(255);
-        //
-        // for(unsigned int i = 0; i < star_ids.size(); i++){
-        //     if(i+1 < star_ids.size()){
-        //         ofDrawLine(stars[star_ids[i]].pos, stars[star_ids[i+1]].pos);
-        //     }
-        //     ofDrawCircle(stars[star_ids[i]].pos, 8);
-        // }
 
     }
 
     // clear old constellations
+    // cout << "constellations.size() = " << constellations.size();
+    deque<int> deadConsts;
     for(unsigned int i=0; i<constellations.size(); i++){
-        if(!constellations[i].alive){
-            constellations.erase(constellations.begin() + i);
-            cout << "deleted " << i << endl;
+        if(constellations[i].time + FADE_TIME < ofGetElapsedTimef()){
+            deadConsts.push_front(i);
+            // constellations.erase(constellations.begin() + i);
+            // cout << "deleted " << i << endl;
         }
+    }
+
+    for(int i : deadConsts){
+        constellations.erase(constellations.begin() + i);
     }
 
     fbo.begin();
@@ -112,21 +138,30 @@ void ofApp::update(){
 
 
         ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+
+        for(Constellation& c : constellations){
+            c.draw(stars);
+        }
+
+        // for(Celestial& star : stars){
+        //     star.draw(trails, orbits, blur, size, color);
+        // }
         for(int i=0; i<starNum; i++){
             stars[i].draw(trails, orbits, blur, size, color);
         }
 
-        for(Constellation c : constellations){
-            c.draw();
-        }
 
     fbo.end();
 }
 
+//--------------------------------------------------------------
 void ofApp::eccentricityChange(float &_ecc){
-    for(int i=0; i<NSTARS; i++){
-        stars[i].updateEcc(eccentricity);
+    for(Celestial& star : stars){
+        star.updateEcc(eccentricity);
     }
+    // for(int i=0; i<NSTARS; i++){
+    //     stars[i].updateEcc(eccentricity);
+    // }
 }
 
 //--------------------------------------------------------------
@@ -146,10 +181,6 @@ void ofApp::draw(){
     ofDrawLine(-20, 0, 20, 0);
     ofDrawLine(0, -20, 0, 20);
 
-
-
-
-
 }
 
 //--------------------------------------------------------------
@@ -162,12 +193,12 @@ void ofApp::exit() {
 void ofApp::newMidiMessage(ofxMidiMessage& msg) {
 
     if(msg.status == MIDI_NOTE_ON){
-      midiMessages.push_back(msg);
-    }
-
-
-    while(midiMessages.size() > maxMessages){
-        midiMessages.erase(midiMessages.begin());
+        midiMessages[msg.channel].push_back(msg);
+        while(midiMessages[msg.channel].size() > maxMessages){
+            midiMessages[msg.channel].erase(midiMessages[msg.channel].begin());
+        }
+    } else if(msg.status == MIDI_CONTROL_CHANGE){
+        cout << "Chan " << msg.channel << ": CC " << msg.control << endl;
     }
 }
 

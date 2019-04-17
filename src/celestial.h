@@ -6,6 +6,7 @@
 
 class Celestial {
     public:
+        Celestial(float _ecc, float _a, float _gRotation);
         void setup(float _ecc, float _a, float _gRotation);
         void update(float dTheta);
         void draw(int trails, bool orbits, bool _blur, float scale, float _color);
@@ -28,7 +29,6 @@ class Celestial {
         ofColor color;
         ofImage blur;
 
-        Celestial();
 
     private:
 };

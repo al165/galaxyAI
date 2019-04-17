@@ -8,6 +8,7 @@
 #include "constellation.h"
 
 #define NSTARS 2000
+#define CHANNELS 8
 
 class ofApp : public ofBaseApp, public ofxMidiListener {
 
@@ -33,9 +34,6 @@ class ofApp : public ofBaseApp, public ofxMidiListener {
 								void newMidiMessage(ofxMidiMessage& eventArgs);
 
                 // float time;
-                Celestial stars[NSTARS];
-								deque<Constellation> constellations;
-
                 ofFbo fbo;
 
                 ofxPanel gui;
@@ -51,8 +49,11 @@ class ofApp : public ofBaseApp, public ofxMidiListener {
 
                 bool bHide;
 
+                vector<Celestial> stars;
+								deque<Constellation> constellations;
+
 								ofxMidiIn midiIn;
-								std::vector<ofxMidiMessage> midiMessages;
+								std::vector<ofxMidiMessage> midiMessages[CHANNELS];
 								std::size_t maxMessages = 10;
 
 };
