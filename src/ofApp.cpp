@@ -13,22 +13,23 @@ void ofApp::setup(){
     // setup GUI...
     eccentricity.addListener(this, &ofApp::eccentricityChange);
     gui.setup();
-    gui.add(starNum.setup("number", 1000, 1, NSTARS));
-    gui.add(trails.setup("trails", 1, 1, TRAIL_LEN));
-    gui.add(fade.setup("fade", 255, 1, 255));
-    gui.add(speed.setup("speed", 100, 0, 2000));
-    gui.add(eccentricity.setup("eccentricity", 0, 0, 0.8));
-    gui.add(size.setup("size", 0, 0, 1));
-    gui.add(color.setup("color", 0, 0, 1));
-    gui.add(orbits.setup("orbits", false));
-    gui.add(blur.setup("blur", false));
+    gui.add(starNum.set("number", 1000, 0, NSTARS));
+    gui.add(trails.set("trails", 1, 1, TRAIL_LEN));
+    gui.add(fade.set("fade", 255, 1, 255));
+    gui.add(speed.set("speed", 100, 0, 500));
+    gui.add(eccentricity.set("eccentricity", 0, 0, 0.5));
+    gui.add(size.set("size", 0, 0, 1));
+    gui.add(constellationTime.set("constellation", 0, 0, 4));
+    // gui.add(color.set("color", 0, 0, 1));
+    gui.add(orbits.set("orbits", false));
+    // gui.add(blur.set("blur", false));
 
     cout << "DONE" << endl;
 
     bHide = false;
 
     ofBackground(0);
-    ofSetCircleResolution(50);
+    ofSetCircleResolution(8);
 
     cout << "Setting up FBO...";
 
@@ -72,7 +73,8 @@ void ofApp::setup(){
     cout << "Setting up MIDI connection..." << endl;
     midiIn.listInPorts();
     // midiIn.openPort(0);
-    midiIn.openPort("LoopBe Internal MIDI 0");
+    // midiIn.openPort("LoopBe Internal MIDI 0");
+    midiIn.openPort("Komplete Audio 6 MIDI 1");
 
     midiIn.ignoreTypes(false, false, false);
     midiIn.addListener(this);
@@ -84,32 +86,28 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    //float dt = speed*ofGetLastFrameTime();
-    // cout << "UPDATE" << endl;
-
-    // for(int i=0; i<NSTARS; i++){
     for(Celestial& star : stars){
-        // stars[i].update(speed);
         star.update(speed);
     }
 
     // if messages greater than 5, draw constelation!
     for(unsigned int j=0; j < CHANNELS; j++){
         if(midiMessages[j].size() > 5){
-            // cout << "creating constellation...";
             vector<int> constellation;
 
             for(unsigned int i=0; i<midiMessages[j].size(); i++){
             		ofxMidiMessage &message = midiMessages[j][i];
                 constellation.push_back(message.pitch + 50*j);
+
+                stars[message.pitch + 50*j].startPulse();
+                stars[message.pitch + 50*j + 250].startPulse();
+                stars[message.pitch + 50*j + 500].startPulse();
             }
 
             Constellation newConst = Constellation(constellation);
             constellations.push_back(newConst);
 
             midiMessages[j].clear();
-
-            // cout << "DONE" << endl;
 
         }
 
@@ -119,7 +117,7 @@ void ofApp::update(){
     // cout << "constellations.size() = " << constellations.size();
     deque<int> deadConsts;
     for(unsigned int i=0; i<constellations.size(); i++){
-        if(constellations[i].time + FADE_TIME < ofGetElapsedTimef()){
+        if(constellations[i].time + constellationTime < ofGetElapsedTimef()){
             deadConsts.push_front(i);
             // constellations.erase(constellations.begin() + i);
             // cout << "deleted " << i << endl;
@@ -140,14 +138,16 @@ void ofApp::update(){
         ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
 
         for(Constellation& c : constellations){
-            c.draw(stars);
+            if(constellationTime > 0.0){
+                c.draw(stars, constellationTime);
+            }
         }
 
         // for(Celestial& star : stars){
         //     star.draw(trails, orbits, blur, size, color);
         // }
         for(int i=0; i<starNum; i++){
-            stars[i].draw(trails, orbits, blur, size, color);
+            stars[i].draw(trails, orbits, size);
         }
 
 
@@ -177,9 +177,9 @@ void ofApp::draw(){
 
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
 
-    ofSetColor(255);
-    ofDrawLine(-20, 0, 20, 0);
-    ofDrawLine(0, -20, 0, 20);
+    // ofSetColor(255);
+    // ofDrawLine(-20, 0, 20, 0);
+    // ofDrawLine(0, -20, 0, 20);
 
 }
 
@@ -192,13 +192,44 @@ void ofApp::exit() {
 //--------------------------------------------------------------
 void ofApp::newMidiMessage(ofxMidiMessage& msg) {
 
+
     if(msg.status == MIDI_NOTE_ON){
+        // cout << "NoteOn: " << msg.pitch << endl;
         midiMessages[msg.channel].push_back(msg);
         while(midiMessages[msg.channel].size() > maxMessages){
             midiMessages[msg.channel].erase(midiMessages[msg.channel].begin());
         }
+
+        stars[msg.pitch + 50*msg.channel].startPulse();
+
     } else if(msg.status == MIDI_CONTROL_CHANGE){
-        cout << "Chan " << msg.channel << ": CC " << msg.control << endl;
+        cout << "Chan " << msg.channel << ": CC " << msg.control;
+        cout << " " << msg.value << endl;
+        if(msg.channel == 10){
+            int value = msg.value;
+            switch(msg.control) {
+                case 16:
+                    starNum.set(ofMap(value, 0, 127, starNum.getMin(), starNum.getMax()));
+                    break;
+                case 20:
+                    trails.set(ofMap(value, 0, 127, trails.getMin(), trails.getMax()));
+                    break;
+                case 24:
+                    fade.set(ofMap(value, 0, 127, fade.getMin(), fade.getMax()));
+                    break;
+                case 17:
+                    speed.set(ofMap(value, 0, 127, speed.getMin(), speed.getMax()));
+                    break;
+                case 21:
+                    eccentricity.set(ofMap(value, 0, 127, eccentricity.getMin(), eccentricity.getMax()));
+                    size.set(ofMap(value, 0, 127, size.getMin(), size.getMax()));
+                    break;
+                case 25:
+                    constellationTime.set(ofMap(value, 0, 127, constellationTime.getMin(), constellationTime.getMax()));
+                    break;
+
+            }
+        }
     }
 }
 
@@ -206,12 +237,16 @@ void ofApp::newMidiMessage(ofxMidiMessage& msg) {
 void ofApp::keyPressed(int key){
     switch (key) {
       case ' ':
-        bHide = !bHide;
-        break;
+          bHide = !bHide;
+          break;
 
       case '?':
-        midiIn.listInPorts();
-        break;
+          midiIn.listInPorts();
+          break;
+
+      case 'f':
+          ofToggleFullscreen();
+          break;
     }
 
 }
@@ -253,6 +288,7 @@ void ofApp::mouseExited(int x, int y){
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
+    fbo.allocate(w, h, GL_RGBA);
 
 }
 

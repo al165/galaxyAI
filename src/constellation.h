@@ -9,7 +9,7 @@ class Constellation {
     public:
         // Constellation(deque<Celestial> &_stars);
         Constellation(vector<int> _starIDs);
-        void draw(vector<Celestial>& stars);
+        void draw(vector<Celestial>& stars, float fade_time);
         float time;
 
     private:

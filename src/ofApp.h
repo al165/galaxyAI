@@ -8,7 +8,7 @@
 #include "constellation.h"
 
 #define NSTARS 2000
-#define CHANNELS 8
+#define CHANNELS 16
 
 class ofApp : public ofBaseApp, public ofxMidiListener {
 
@@ -37,15 +37,14 @@ class ofApp : public ofBaseApp, public ofxMidiListener {
                 ofFbo fbo;
 
                 ofxPanel gui;
-                ofxIntSlider starNum;
-                ofxIntSlider trails;
-                ofxIntSlider fade;
-                ofxFloatSlider speed;
-                ofxFloatSlider eccentricity;
-                ofxFloatSlider size;
-                ofxFloatSlider color;
-                ofxToggle orbits;
-                ofxToggle blur;
+                ofParameter<int> starNum;
+                ofParameter<int> trails;
+                ofParameter<int> fade;
+                ofParameter<float> speed;
+                ofParameter<float> eccentricity;
+                ofParameter<float> size;
+								ofParameter<float> constellationTime;
+                ofParameter<bool> orbits;
 
                 bool bHide;
 
