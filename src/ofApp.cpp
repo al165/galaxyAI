@@ -16,7 +16,7 @@ void ofApp::setup(){
     gui.add(starNum.set("number", 1000, 0, NSTARS));
     gui.add(trails.set("trails", 1, 1, TRAIL_LEN));
     gui.add(fade.set("fade", 255, 1, 255));
-    gui.add(speed.set("speed", 100, 0, 500));
+    gui.add(speed.set("speed", 100, 0, 300));
     gui.add(eccentricity.set("eccentricity", 0, 0, 0.5));
     gui.add(size.set("size", 0, 0, 1));
     gui.add(constellationTime.set("constellation", 0, 0, 4));

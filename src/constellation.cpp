@@ -15,6 +15,7 @@ void Constellation::draw(vector<Celestial>& stars, float fade_time){
     int lastID = -1;
     for(int i : starIDs){
         if(lastID >= 0){
+            ofSetLineWidth(2);
             ofDrawLine(stars[i].pos, stars[lastID].pos);
         }
         // ofDrawCircle(stars[i].pos, r);

@@ -19,7 +19,9 @@ void Celestial::setup(float _ecc, float _a, float _gRotation){
     pos = ofVec2f(r, 0);
 
     size = ofRandom(1, 4);
-    color.set(255, ofRandom(200, 255), ofRandom(200, 255));
+
+    int col = ofRandom(200, 255);
+    color.set(col);
 
     pulse = false;
     pulse_start = 0;
@@ -88,9 +90,9 @@ void Celestial::draw(int trails, bool orbits, float _scale){
         if(pulse){
             float delta = ofGetElapsedTimef() - pulse_start;
             float radius = ofMap(delta, 0, PULSE_TIME, 6, 1);
-            ofDrawCircle(x, y, size*_scale + radius);
+            ofDrawCircle(x, y, 2+size*_scale + radius);
         } else {
-            ofDrawCircle(x, y, 1+size*_scale);
+            ofDrawCircle(x, y, 2+size*_scale);
         }
 
         // draw trails...
@@ -105,12 +107,15 @@ void Celestial::draw(int trails, bool orbits, float _scale){
             float x1 = scale*t_r * cos(tTheta);
             float y1 = scale*t_r * sin(tTheta);
 
-            ofSetColor(color, ofMap(i, 0, trails-1, 255, 0));
+            ofSetColor(color.r, color.g, color.b, ofMap(i, 0, trails-1, 255, 1));
+            ofSetLineWidth(2);
             ofDrawLine(x0, y0, x1, y1);
 
             x0 = x1;
             y0 = y1;
         }
+
+
     ofPopMatrix();
 
 }
