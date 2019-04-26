@@ -37,14 +37,22 @@ class ofApp : public ofBaseApp, public ofxMidiListener {
                 ofFbo fbo;
 
                 ofxPanel gui;
-                ofParameter<int> starNum;
-                ofParameter<int> trails;
-                ofParameter<int> fade;
-                ofParameter<float> speed;
-                ofParameter<float> eccentricity;
-                ofParameter<float> size;
+                ofParameter<int> starNumTarget;
+                ofParameter<int> trailsTarget;
+                ofParameter<int> fadeTarget;
+                ofParameter<int> speedTarget;
+                ofParameter<float> eccentricityTarget;
+                ofParameter<float> sizeTarget;
 								ofParameter<float> constellationTime;
                 ofParameter<bool> orbits;
+
+
+								int starNum;
+								int trails;
+								int fade;
+								int speed;
+								float eccentricity;
+								float size;
 
                 bool bHide;
 

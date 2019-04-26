@@ -11,18 +11,24 @@ void ofApp::setup(){
     //ofSetFrameRate(30);
     cout << "Setting up GUI... ";
     // setup GUI...
-    eccentricity.addListener(this, &ofApp::eccentricityChange);
+    // eccentricityTarget.addListener(this, &ofApp::eccentricityChange);
     gui.setup();
-    gui.add(starNum.set("number", 1000, 0, NSTARS));
-    gui.add(trails.set("trails", 1, 1, TRAIL_LEN));
-    gui.add(fade.set("fade", 255, 1, 255));
-    gui.add(speed.set("speed", 100, 0, 300));
-    gui.add(eccentricity.set("eccentricity", 0, 0, 0.5));
-    gui.add(size.set("size", 0, 0, 1));
+    gui.add(starNumTarget.set("number", 1000, 0, NSTARS));
+    gui.add(trailsTarget.set("trails", 1, 1, TRAIL_LEN));
+    gui.add(fadeTarget.set("fade", 255, 1, 255));
+    gui.add(speedTarget.set("speed", 100, 0, 300));
+    gui.add(eccentricityTarget.set("eccentricity", 0, 0, 0.5));
+    gui.add(sizeTarget.set("size", 0, 0, 1));
     gui.add(constellationTime.set("constellation", 0, 0, 4));
     // gui.add(color.set("color", 0, 0, 1));
     gui.add(orbits.set("orbits", false));
     // gui.add(blur.set("blur", false));
+
+    starNum = starNumTarget;
+    trails = trailsTarget;
+    fade = fadeTarget;
+    speed = speedTarget;
+    size = sizeTarget;
 
     cout << "DONE" << endl;
 
@@ -86,6 +92,66 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    // Update parameters...
+    if(starNum != starNumTarget){
+        int dt = starNumTarget - starNum;
+        if(dt > 0){
+            starNum += 2;
+        } else {
+            starNum -= 2;
+        }
+        starNum = ofClamp(starNum, 0, NSTARS);
+    }
+
+    if(trails != trailsTarget){
+        int dt = trailsTarget - trails;
+        if(dt > 0){
+            trails += 1;
+        } else {
+            trails -= 1;
+        }
+        trails = ofClamp(trails, 0, TRAIL_LEN);
+
+    }
+
+
+    if(fade != fadeTarget){
+        int dt = fadeTarget - fade;
+        if(dt > 0){
+            fade += 2;
+        } else {
+            fade -= 2;
+        }
+        fade = ofClamp(fade, 1, 255);
+
+    }
+
+
+    if(speed != speedTarget){
+        int dt = speedTarget - speed;
+        if(dt > 0){
+            speed += 1;
+        } else {
+            speed -= 1;
+        }
+        speed = ofClamp(speed, speedTarget.getMin(), speedTarget.getMax());
+
+    }
+
+    if(abs(eccentricity - eccentricityTarget) > 0.01){
+        float dt = eccentricityTarget - eccentricity;
+        eccentricity += dt/60;
+        eccentricity = ofClamp(eccentricity, eccentricityTarget.getMin(), eccentricityTarget.getMax());
+        eccentricityChange(eccentricity);
+    }
+
+    if(abs(sizeTarget - size) > 0.01){
+        float dt = sizeTarget - size;
+        size += dt/60;
+        size = ofClamp(size, sizeTarget.getMin(), sizeTarget.getMax());
+    }
+
+    // Start drawing...
     for(Celestial& star : stars){
         star.update(speed);
     }
@@ -209,20 +275,20 @@ void ofApp::newMidiMessage(ofxMidiMessage& msg) {
             int value = msg.value;
             switch(msg.control) {
                 case 16:
-                    starNum.set(ofMap(value, 0, 127, starNum.getMin(), starNum.getMax()));
+                    starNumTarget.set(ofMap(value, 0, 127, starNumTarget.getMin(), starNumTarget.getMax()));
                     break;
                 case 20:
-                    trails.set(ofMap(value, 0, 127, trails.getMin(), trails.getMax()));
+                    trailsTarget.set(ofMap(value, 0, 127, trailsTarget.getMin(), trailsTarget.getMax()));
                     break;
                 case 24:
-                    fade.set(ofMap(value, 0, 127, fade.getMin(), fade.getMax()));
+                    fadeTarget.set(ofMap(value, 0, 127, fadeTarget.getMin(), fadeTarget.getMax()));
                     break;
                 case 17:
-                    speed.set(ofMap(value, 0, 127, speed.getMin(), speed.getMax()));
+                    speedTarget.set(ofMap(value, 0, 127, speedTarget.getMin(), speedTarget.getMax()));
                     break;
                 case 21:
-                    eccentricity.set(ofMap(value, 0, 127, eccentricity.getMin(), eccentricity.getMax()));
-                    size.set(ofMap(value, 0, 127, size.getMin(), size.getMax()));
+                    eccentricityTarget.set(ofMap(value, 0, 127, eccentricityTarget.getMin(), eccentricityTarget.getMax()));
+                    sizeTarget.set(ofMap(value, 0, 127, sizeTarget.getMin(), sizeTarget.getMax()));
                     break;
                 case 25:
                     constellationTime.set(ofMap(value, 0, 127, constellationTime.getMin(), constellationTime.getMax()));
