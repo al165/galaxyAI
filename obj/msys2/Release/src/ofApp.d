@@ -354,6 +354,27 @@ obj/msys2/Release/src/ofApp.o: \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxLabel.h \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxColorPicker.h \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxPanel.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/ofxDatGui.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiGroups.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiLabel.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/core/ofxDatGuiComponent.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/core/ofxDatGuiIntObject.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/themes/ofxDatGuiThemes.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/themes/ofxDatGuiTheme.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/libs/ofxSmartFont/ofxSmartFont.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/core/ofxDatGuiEvents.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/core/ofxDatGuiConstants.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiButton.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiSlider.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiTextInputField.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiTextInput.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiFRM.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGui2dPad.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiColorPicker.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiMatrix.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiTimeGraph.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiScrollView.h \
+ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiControls.h \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/apps/myApps/galaxyAI/src/star.h \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/apps/myApps/galaxyAI/src/celestial.h \
  C:/msys64/home/Arran/of_v0.10.1_msys2_release/apps/myApps/galaxyAI/src/constellation.h
@@ -1065,6 +1086,48 @@ C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxLabel.h:
 C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxColorPicker.h:
 
 C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxGui/src/ofxPanel.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/ofxDatGui.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiGroups.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiLabel.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/core/ofxDatGuiComponent.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/core/ofxDatGuiIntObject.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/themes/ofxDatGuiThemes.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/themes/ofxDatGuiTheme.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/libs/ofxSmartFont/ofxSmartFont.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/core/ofxDatGuiEvents.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/core/ofxDatGuiConstants.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiButton.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiSlider.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiTextInputField.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiTextInput.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiFRM.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGui2dPad.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiColorPicker.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiMatrix.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiTimeGraph.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiScrollView.h:
+
+C:/msys64/home/Arran/of_v0.10.1_msys2_release/addons/ofxDatGui/src/components/ofxDatGuiControls.h:
 
 C:/msys64/home/Arran/of_v0.10.1_msys2_release/apps/myApps/galaxyAI/src/star.h:
 

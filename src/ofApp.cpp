@@ -5,6 +5,9 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 
+    ofSetVerticalSync(true);
+    wglSwapIntervalEXT(1);
+
     cout << "Starting..." << endl;
 
     ofResetElapsedTimeCounter();
@@ -19,10 +22,23 @@ void ofApp::setup(){
     gui.add(speedTarget.set("speed", 100, 0, 300));
     gui.add(eccentricityTarget.set("eccentricity", 0, 0, 0.5));
     gui.add(sizeTarget.set("size", 0, 0, 1));
-    gui.add(constellationTime.set("constellation", 0, 0, 4));
+    gui.add(constellationTime.set("constellation", 1, 0, 4));
+    gui.add(beatBrightness.set("beat brightness", 0, 0, 100));
     // gui.add(color.set("color", 0, 0, 1));
     gui.add(orbits.set("orbits", false));
     // gui.add(blur.set("blur", false));
+
+    guiPanel = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
+    guiPanel->addHeader("MIDI");
+    guiPanel->addLabel("MIDI Note in device...");
+    midiNoteDevice = guiPanel->addDropdown("Select...", midiNoteIn.getInPortList());
+    guiPanel->addLabel("MIDI CC in device...");
+    midiCCDevice = guiPanel->addDropdown("Select...", midiCCIn.getInPortList());
+
+    guiPanel->setAutoDraw(false);
+
+    midiNoteDevice->onDropdownEvent(this, &ofApp::onNoteInDropdownEvent);
+    midiCCDevice->onDropdownEvent(this, &ofApp::onCCInDropdownEvent);
 
     starNum = starNumTarget;
     trails = trailsTarget;
@@ -77,14 +93,20 @@ void ofApp::setup(){
 
     // setup Midi connection
     cout << "Setting up MIDI connection..." << endl;
-    midiIn.listInPorts();
-    // midiIn.openPort(0);
+    midiNoteIn.listInPorts();
+    midiNoteIn.openPort(0);
+    midiCCIn.openPort(0);
     // midiIn.openPort("LoopBe Internal MIDI 0");
-    midiIn.openPort("Komplete Audio 6 MIDI 1");
+    // midiIn.openPort("Komplete Audio 6 MIDI 1");
+    // midiIn.openPort("MPKmini2 3");
 
-    midiIn.ignoreTypes(false, false, false);
-    midiIn.addListener(this);
-    midiIn.setVerbose(true);
+    midiNoteIn.ignoreTypes(false, false, true);
+    midiNoteIn.addListener(this);
+    midiNoteIn.setVerbose(true);
+
+    midiCCIn.ignoreTypes(false, false, true);
+    midiCCIn.addListener(this);
+    midiCCIn.setVerbose(true);
 
     cout << "DONE" << endl;
 
@@ -92,6 +114,8 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    guiPanel->update();
+
     // Update parameters...
     if(starNum != starNumTarget){
         int dt = starNumTarget - starNum;
@@ -195,11 +219,18 @@ void ofApp::update(){
     }
 
     fbo.begin();
-        // fade the stars..
         ofFill();
-        ofSetColor(0, 0, 0, fade);
+        if(pulse){
+          float delta = ofGetElapsedTimef() - pulse_start;
+          float grey = ofMap(delta, 0.0, PULSE_TIME, beatBrightness, 0.0);
+          ofSetColor(grey, grey, grey, fade);
+          if(delta > PULSE_TIME){
+            pulse = false;
+          }
+        } else {
+          ofSetColor(0, 0, 0, fade);
+        }
         ofDrawRectangle(0, 0, fbo.getWidth(), fbo.getHeight());
-
 
         ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
 
@@ -225,9 +256,6 @@ void ofApp::eccentricityChange(float &_ecc){
     for(Celestial& star : stars){
         star.updateEcc(eccentricity);
     }
-    // for(int i=0; i<NSTARS; i++){
-    //     stars[i].updateEcc(eccentricity);
-    // }
 }
 
 //--------------------------------------------------------------
@@ -239,6 +267,7 @@ void ofApp::draw(){
 
     if(!bHide){
         gui.draw();
+        guiPanel->draw();
     }
 
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
@@ -251,52 +280,120 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::exit() {
-    midiIn.closePort();
-    midiIn.removeListener(this);
+    midiNoteIn.closePort();
+    midiNoteIn.removeListener(this);
+    midiCCIn.closePort();
+    midiCCIn.removeListener(this);
 }
 
 //--------------------------------------------------------------
 void ofApp::newMidiMessage(ofxMidiMessage& msg) {
 
+    if(msg.portName == midiNoteDevice->getLabel()){
+      this->noteMidiMessage(msg);
+    } else if(msg.portName == midiCCDevice->getLabel()){
+      this->ccMidiMessage(msg);
+    }
+}
 
-    if(msg.status == MIDI_NOTE_ON){
-        // cout << "NoteOn: " << msg.pitch << endl;
+
+void ofApp::noteMidiMessage(ofxMidiMessage& msg){
+
+    if(clock.update(msg.bytes)){
+        beats = clock.getBeats();
+        int newQuarter = (beats / 4)%4;
+        if(newQuarter != quarters){
+          quarters = newQuarter;
+          // cout << quarters << endl;
+          pulse = true;
+          pulse_start = ofGetElapsedTimef();
+        }
+    }
+
+    switch (msg.status) {
+      case MIDI_TIME_CLOCK:
+        // cout << beats << endl;
+
+      case MIDI_START: case MIDI_CONTINUE:
+        if(!clockRunning){
+          clockRunning = true;
+          cout << "Clock set running" << endl;
+        }
+
+        break;
+      case MIDI_STOP:
+        if(clockRunning){
+          clockRunning = false;
+          cout << "Clock stopped" << endl;
+        }
+
+        break;
+
+      case MIDI_NOTE_ON:
+
         midiMessages[msg.channel].push_back(msg);
         while(midiMessages[msg.channel].size() > maxMessages){
             midiMessages[msg.channel].erase(midiMessages[msg.channel].begin());
         }
 
         stars[msg.pitch + 50*msg.channel].startPulse();
+        break;
 
-    } else if(msg.status == MIDI_CONTROL_CHANGE){
+      default:
+        break;
+    }
+
+}
+
+void ofApp::ccMidiMessage(ofxMidiMessage& msg){
+    if(msg.status == MIDI_CONTROL_CHANGE){
         cout << "Chan " << msg.channel << ": CC " << msg.control;
         cout << " " << msg.value << endl;
-        if(msg.channel == 10){
+        if(msg.channel == 1){
             int value = msg.value;
             switch(msg.control) {
-                case 16:
+                case 25:
                     starNumTarget.set(ofMap(value, 0, 127, starNumTarget.getMin(), starNumTarget.getMax()));
                     break;
-                case 20:
+                case 26:
                     trailsTarget.set(ofMap(value, 0, 127, trailsTarget.getMin(), trailsTarget.getMax()));
                     break;
-                case 24:
+                case 27:
                     fadeTarget.set(ofMap(value, 0, 127, fadeTarget.getMin(), fadeTarget.getMax()));
                     break;
-                case 17:
+                case 28:
                     speedTarget.set(ofMap(value, 0, 127, speedTarget.getMin(), speedTarget.getMax()));
                     break;
-                case 21:
+                case 29:
                     eccentricityTarget.set(ofMap(value, 0, 127, eccentricityTarget.getMin(), eccentricityTarget.getMax()));
                     sizeTarget.set(ofMap(value, 0, 127, sizeTarget.getMin(), sizeTarget.getMax()));
                     break;
-                case 25:
+                case 30:
                     constellationTime.set(ofMap(value, 0, 127, constellationTime.getMin(), constellationTime.getMax()));
+                    break;
+                case 31:
+                    beatBrightness.set(ofMap(value, 0, 127, beatBrightness.getMin(), beatBrightness.getMax()));
                     break;
 
             }
         }
     }
+
+}
+
+//--------------------------------------------------------------
+void ofApp::onNoteInDropdownEvent(ofxDatGuiDropdownEvent e){
+    cout << "onNoteInDropdownEvent: " << e.target->getLabel() << " Selected" << endl;
+
+    midiNoteIn.closePort();
+    midiNoteIn.openPort(e.target->getLabel());
+}
+
+void ofApp::onCCInDropdownEvent(ofxDatGuiDropdownEvent e){
+    cout << "onCCInDropdownEvent: " << e.target->getLabel() << " Selected" << endl;
+
+    midiCCIn.closePort();
+    midiCCIn.openPort(e.target->getLabel());
 }
 
 //--------------------------------------------------------------
@@ -304,10 +401,6 @@ void ofApp::keyPressed(int key){
     switch (key) {
       case ' ':
           bHide = !bHide;
-          break;
-
-      case '?':
-          midiIn.listInPorts();
           break;
 
       case 'f':
